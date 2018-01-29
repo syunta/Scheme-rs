@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: rust
+    working_directory: ~/Scheme-rs
+    steps:
+      - checkout
+      - run: cargo test
