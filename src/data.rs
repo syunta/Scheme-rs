@@ -9,26 +9,29 @@ pub enum Obj {
 
 impl fmt::Display for Obj {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Obj::Nil => write!(f, "{}", "()"),
-            Obj::Int(i) => write!(f, "{}", i),
-            Obj::Cell(ref car, ref cdr) => {
-                write!(f, "(").unwrap();
-                write!(f, "{}", car).unwrap();
-                print_cdr(cdr, f).unwrap();
-                return write!(f, ")");
-            }
+        write!(f, "{}", format_string(self))
+    }
+}
+
+fn format_string(obj: &Obj) -> String {
+    match *obj {
+        Obj::Nil => "()".to_string(),
+        Obj::Int(i) => i.to_string(),
+        Obj::Cell(ref car, ref cdr) => {
+            "(".to_string()
+                + &car.to_string()
+                + &format_cdr(cdr)
+                + ")"
         }
     }
 }
 
-fn print_cdr(obj: &Obj, f: &mut fmt::Formatter) -> fmt::Result {
+fn format_cdr(obj: &Obj) -> String {
     match *obj {
-        Obj::Nil => write!(f, ""),
+        Obj::Nil => "".to_string(),
         Obj::Cell(ref car, ref cdr) => {
-            write!(f, " {}", car).unwrap();
-            print_cdr(cdr, f)
+            " ".to_string() + &car.to_string() + &format_cdr(cdr)
         },
-        ref atom => write!(f, " . {}", atom)
+        ref atom => " . ".to_string() + &atom.to_string()
     }
 }
