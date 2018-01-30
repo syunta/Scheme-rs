@@ -19,7 +19,7 @@ fn format_string(obj: &Obj) -> String {
         Obj::Int(i) => i.to_string(),
         Obj::Cell(ref car, ref cdr) => {
             "(".to_string()
-                + &car.to_string()
+                + &format_string(car)
                 + &format_cdr(cdr)
                 + ")"
         }
