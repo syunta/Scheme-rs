@@ -1,6 +1,7 @@
 use std::fmt;
 use std::rc::Rc;
 
+#[derive(PartialEq, Debug)]
 pub enum Obj {
     Nil,
     Int(i32),
