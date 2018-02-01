@@ -11,11 +11,15 @@ impl Parser {
 
     fn parse_expr(&mut self) -> Obj {
         loop {
-            let ch = self.peek();
+            let ch = self.get_char();
             match ch {
                 Some(c) => {
+                    if is_delimiter(c) {
+                        continue;
+                    }
                     if c.is_digit(10) {
-                        return self.parse_integer()
+                        let val = c.to_digit(10).unwrap() as i32;
+                        return self.parse_integer(val)
                     }
                 },
                 None => return Obj::Nil
@@ -23,8 +27,7 @@ impl Parser {
         }
     }
 
-    fn parse_integer(&mut self) -> Obj {
-        let mut val = 0;
+    fn parse_integer(&mut self, mut val: i32) -> Obj {
         loop {
             let ch = self.get_char();
             match ch {
@@ -65,4 +68,7 @@ fn is_delimiter(c: char) -> bool {
 fn it_works() {
     let mut p = Parser { unparsed: "123".to_string() };
     assert_eq!(Obj::Int(123), p.parse());
+
+    let mut p = Parser { unparsed: "   \n ".to_string() };
+    assert_eq!(Obj::Nil, p.parse());
 }
