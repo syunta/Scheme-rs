@@ -17,6 +17,10 @@ impl Parser {
                     if is_delimiter(c) {
                         continue;
                     }
+                    if c == ';' {
+                        self.skip_comment();
+                        continue;
+                    }
                     if c.is_digit(10) {
                         let val = c.to_digit(10).unwrap() as i32;
                         return self.parse_integer(val)
@@ -41,6 +45,32 @@ impl Parser {
                     }
                 },
                 None => return Obj::Int(val)
+            }
+        }
+    }
+
+    fn skip_comment(&mut self) {
+        loop {
+            let ch = self.get_char();
+            match ch {
+                Some(c) => {
+                    if c == '\n' {
+                        return
+                    }
+                    if c == '\r' {
+                        let next = self.peek();
+                        match next {
+                            Some(n) => {
+                                if n == '\n' {
+                                    self.get_char();
+                                }
+                            },
+                            None => {}
+                        }
+                        return
+                    }
+                },
+                None => return
             }
         }
     }
@@ -70,5 +100,8 @@ fn it_works() {
     assert_eq!(Obj::Int(123), p.parse());
 
     let mut p = Parser { unparsed: "   \n ".to_string() };
+    assert_eq!(Obj::Nil, p.parse());
+
+    let mut p = Parser { unparsed: ";this is a comment".to_string() };
     assert_eq!(Obj::Nil, p.parse());
 }
