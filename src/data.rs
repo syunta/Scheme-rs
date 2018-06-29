@@ -4,6 +4,7 @@ use std::rc::Rc;
 pub enum Obj {
     Nil,
     Int(i32),
+    Pair(i32),
 }
 
 #[test]
